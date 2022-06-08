@@ -1,7 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from 'src/base.entity';
+import { TweetEntity } from 'src/twitter/entity/tweet.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
-@Entity({ name: 'users' })
-export class UserEntity {
+@Entity({ name: 'USERS' })
+export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,4 +22,11 @@ export class UserEntity {
 
   @Column()
   password: string;
+
+  @OneToMany(() => TweetEntity, (tweets) => tweets.owner)
+  tweets: TweetEntity[];
+
+  @ManyToMany(() => UserEntity)
+  @JoinTable()
+  following: UserEntity[];
 }

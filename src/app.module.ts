@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { UserEntity } from './user/entity/user.entity';
 import { TwitterModule } from './twitter/twitter.module';
+import { TweetEntity } from './twitter/entity/tweet.entity';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { TwitterModule } from './twitter/twitter.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASS,
       database: process.env.POSTGRES_DB,
-      entities: [UserEntity],
+      entities: [UserEntity, TweetEntity],
       synchronize: true,
     }),
     UserModule,

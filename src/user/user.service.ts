@@ -6,6 +6,7 @@ import { UserEntity } from './entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
+import { FollowDto } from './dto/follow.dto';
 
 @Injectable()
 export class UserService {
@@ -54,5 +55,35 @@ export class UserService {
       id: findUser.id,
     });
     return { accessToken };
+  }
+
+  async follow(followDto: FollowDto, requesterId: number) {
+    const requesterProfile = await this.userRepository.findOne({
+      where: { id: requesterId },
+    });
+    const toFollow = await this.userRepository.findOne({
+      where: { id: followDto.to },
+    });
+    if (!toFollow) {
+      throw new HttpException(
+        'Following id is not valid',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    try {
+      await this.userRepository
+        .createQueryBuilder()
+        .relation(UserEntity, 'following')
+        .of(requesterProfile)
+        .add(toFollow);
+    } catch (err) {
+      if (err.code == '23505') {
+        throw new HttpException('Already following', HttpStatus.BAD_REQUEST);
+      }
+      throw new HttpException(
+        'Error occured',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
