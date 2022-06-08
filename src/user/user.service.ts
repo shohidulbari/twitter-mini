@@ -1,0 +1,58 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserEntity } from './entity/user.entity';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/login.dto';
+
+@Injectable()
+export class UserService {
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const newUser = new UserEntity();
+    newUser.name = createUserDto.name;
+    newUser.email = createUserDto.email;
+    newUser.password = await bcrypt.hash(createUserDto.password, 8);
+    try {
+      const dbResp = await this.userRepository.save(newUser);
+      return { id: dbResp.id, name: dbResp.name, email: dbResp.email };
+    } catch (err) {
+      if (err.code == '23505') {
+        throw new HttpException(
+          'Email is already in use',
+          HttpStatus.BAD_REQUEST,
+        );
+      } else {
+        throw new HttpException(
+          'Failed to create new user',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+  }
+
+  async login(loginDto: LoginDto) {
+    const findUser = await this.userRepository.findOne({
+      where: { email: loginDto.email },
+    });
+    console.log(findUser);
+    if (!findUser) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    const check = await bcrypt.compare(loginDto.password, findUser.password);
+    if (!check) {
+      throw new HttpException('Incorrect password', HttpStatus.BAD_REQUEST);
+    }
+    const accessToken = await this.jwtService.sign({
+      id: findUser.id,
+    });
+    return { accessToken };
+  }
+}
