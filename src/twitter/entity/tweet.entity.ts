@@ -1,5 +1,5 @@
-import { BaseEntity } from 'src/base.entity';
-import { UserEntity } from 'src/user/entity/user.entity';
+import { BaseEntity } from '../../base.entity';
+import { UserEntity } from '../../user/entity/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'TWEETS' })

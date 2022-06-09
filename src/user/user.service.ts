@@ -45,7 +45,6 @@ export class UserService {
     const findUser = await this.userRepository.findOne({
       where: { email: loginDto.email },
     });
-    console.log(findUser);
     if (!findUser) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
@@ -87,6 +86,9 @@ export class UserService {
           .of(toFollow)
           .add(requesterProfile);
       });
+      return {
+        status: 'OK',
+      };
     } catch (err) {
       if (err.code == '23505') {
         throw new HttpException('Already following', HttpStatus.BAD_REQUEST);

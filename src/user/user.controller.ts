@@ -6,7 +6,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { TransformInterceptor } from 'src/transform.interceptor';
+import { TransformInterceptor } from '../transform.interceptor';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowDto } from './dto/follow.dto';
 import { LoginDto } from './dto/login.dto';

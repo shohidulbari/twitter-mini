@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entity/user.entity';
+import { UserEntity } from '../user/entity/user.entity';
 import { Repository } from 'typeorm';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { TweetEntity } from './entity/tweet.entity';
@@ -22,7 +22,7 @@ export class TwitterService {
     newTweet.body = createTweetDto.body;
     newTweet.owner = userProfile;
     const dbResp = await this.tweetRepository.save(newTweet);
-    return { id: dbResp.id };
+    return dbResp;
   }
 
   async getTimeline(requesterId, skip, limit) {

@@ -7,7 +7,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/user/auth.guard';
+import { AuthGuard } from '../user/auth.guard';
 import { Request } from 'express';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { TwitterService } from './twitter.service';

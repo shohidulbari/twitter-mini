@@ -1,5 +1,5 @@
-import { BaseEntity } from 'src/base.entity';
-import { TweetEntity } from 'src/twitter/entity/tweet.entity';
+import { BaseEntity } from '../../base.entity';
+import { TweetEntity } from '../../twitter/entity/tweet.entity';
 import {
   Entity,
   Column,
