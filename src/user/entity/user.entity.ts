@@ -29,4 +29,8 @@ export class UserEntity extends BaseEntity {
   @ManyToMany(() => UserEntity)
   @JoinTable()
   following: UserEntity[];
+
+  @ManyToMany(() => UserEntity)
+  @JoinTable()
+  followers: UserEntity[];
 }

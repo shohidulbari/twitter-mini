@@ -8,9 +8,6 @@ export class TweetEntity extends BaseEntity {
   id: number;
 
   @Column()
-  title: string;
-
-  @Column()
   body: string;
 
   @ManyToOne(() => UserEntity, (user) => user.tweets)

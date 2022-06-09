@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entity/user.entity';
 import * as bcrypt from 'bcrypt';
@@ -14,6 +14,8 @@ export class UserService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
+    @InjectDataSource()
+    private dataSource: DataSource,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -71,11 +73,20 @@ export class UserService {
       );
     }
     try {
-      await this.userRepository
-        .createQueryBuilder()
-        .relation(UserEntity, 'following')
-        .of(requesterProfile)
-        .add(toFollow);
+      await this.dataSource.transaction(async (entityManager) => {
+        await entityManager
+          .getRepository(UserEntity)
+          .createQueryBuilder()
+          .relation(UserEntity, 'following')
+          .of(requesterProfile)
+          .add(toFollow);
+        await entityManager
+          .getRepository(UserEntity)
+          .createQueryBuilder()
+          .relation(UserEntity, 'followers')
+          .of(toFollow)
+          .add(requesterProfile);
+      });
     } catch (err) {
       if (err.code == '23505') {
         throw new HttpException('Already following', HttpStatus.BAD_REQUEST);

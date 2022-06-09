@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { UserEntity } from './user/entity/user.entity';
 import { TwitterModule } from './twitter/twitter.module';
 import { TweetEntity } from './twitter/entity/tweet.entity';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from '@algoan/nestjs-logging-interceptor';
 
 @Module({
   imports: [
@@ -25,6 +27,12 @@ import { TweetEntity } from './twitter/entity/tweet.entity';
     TwitterModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}

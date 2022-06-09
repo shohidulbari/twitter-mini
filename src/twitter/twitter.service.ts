@@ -19,7 +19,6 @@ export class TwitterService {
       where: { id: requesterId },
     });
     const newTweet = new TweetEntity();
-    newTweet.title = createTweetDto.title;
     newTweet.body = createTweetDto.body;
     newTweet.owner = userProfile;
     const dbResp = await this.tweetRepository.save(newTweet);
@@ -27,14 +26,27 @@ export class TwitterService {
   }
 
   async getTimeline(requesterId, skip, limit) {
-    const tweets = await this.tweetRepository.find({
-      where: { owner: requesterId },
-      skip: skip,
-      take: limit,
-      order: {
-        created_at: 'DESC',
-      },
-    });
+    const tweets = await this.tweetRepository
+      .createQueryBuilder('tweet')
+      .innerJoin('tweet.owner', 'owner')
+      .where('owner.id = :requesterId', { requesterId })
+      .orderBy('tweet.created_at', 'DESC')
+      .skip(skip)
+      .limit(limit)
+      .getMany();
+    return tweets;
+  }
+
+  async getNewsFeed(requesterId, skip, limit) {
+    const tweets = await this.tweetRepository
+      .createQueryBuilder('tweet')
+      .innerJoin('tweet.owner', 'owner')
+      .innerJoin('owner.followers', 'followers')
+      .where('followers.id = :requesterId', { requesterId })
+      .orderBy('tweet.created_at', 'DESC')
+      .skip(skip)
+      .limit(limit)
+      .getMany();
     return tweets;
   }
 }
