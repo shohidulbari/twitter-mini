@@ -10,6 +10,6 @@ export class TweetEntity extends BaseEntity {
   @Column()
   body: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.tweets)
+  @ManyToOne(() => UserEntity, (user) => user.tweets, { onDelete: 'CASCADE' })
   owner: UserEntity;
 }

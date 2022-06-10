@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   Req,
   UseGuards,
@@ -28,6 +30,7 @@ export class UserController {
   }
 
   @Post('/login')
+  @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
     return await this.userService.login(loginDto);
   }
