@@ -133,7 +133,7 @@ describe('TwitterService', () => {
     chai.expect(resp.status).to.be.eql('OK');
 
     // get user2 newsfeed
-    let newsfeed = await twitterService.getNewsFeed(user2.id, 0, 10);
+    let newsfeed = await twitterService.getNewsFeed(user2.id, 0, 3);
     chai.expect(newsfeed.length).to.be.eql(3);
     chai.expect(newsfeed[0].body).to.be.eql(user_1_tweets[2]);
     chai.expect(newsfeed[1].body).to.be.eql(user_1_tweets[1]);
@@ -147,9 +147,9 @@ describe('TwitterService', () => {
     chai.expect(newsfeed[1].body).to.be.eql(user_1_tweets[0]);
   });
 
-  afterEach(async () => {
-    await entityManager.getRepository(TweetEntity).clear();
-  });
+  // afterEach(async () => {
+  //   await entityManager.getRepository(TweetEntity).clear();
+  // });
 
   afterAll(async () => {
     await entityManager.getRepository(UserEntity).delete(user1.id);
