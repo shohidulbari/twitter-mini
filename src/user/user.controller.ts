@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { TransformInterceptor } from 'src/transform.interceptor';
+import { TransformInterceptor } from '../transform.interceptor';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowDto } from './dto/follow.dto';
 import { LoginDto } from './dto/login.dto';
@@ -28,6 +30,7 @@ export class UserController {
   }
 
   @Post('/login')
+  @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
     return await this.userService.login(loginDto);
   }

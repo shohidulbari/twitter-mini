@@ -1,5 +1,5 @@
-import { BaseEntity } from 'src/base.entity';
-import { TweetEntity } from 'src/twitter/entity/tweet.entity';
+import { BaseEntity } from '../../base.entity';
+import { TweetEntity } from '../../twitter/entity/tweet.entity';
 import {
   Entity,
   Column,
@@ -23,14 +23,14 @@ export class UserEntity extends BaseEntity {
   @Column()
   password: string;
 
-  @OneToMany(() => TweetEntity, (tweets) => tweets.owner)
+  @OneToMany(() => TweetEntity, (tweets) => tweets.owner, { cascade: true })
   tweets: TweetEntity[];
 
-  @ManyToMany(() => UserEntity)
+  @ManyToMany(() => UserEntity, { cascade: true })
   @JoinTable()
   following: UserEntity[];
 
-  @ManyToMany(() => UserEntity)
+  @ManyToMany(() => UserEntity, { cascade: true })
   @JoinTable()
   followers: UserEntity[];
 }

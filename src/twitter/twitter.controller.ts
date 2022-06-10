@@ -6,17 +6,20 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/user/auth.guard';
+import { AuthGuard } from '../user/auth.guard';
 import { Request } from 'express';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { TwitterService } from './twitter.service';
 import { ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PaginationDto } from './dto/pagination.dto';
+import { TransformInterceptor } from '../transform.interceptor';
 
 @Controller('twitter')
 @ApiTags('twitter')
 @UseGuards(AuthGuard)
+@UseInterceptors(new TransformInterceptor())
 export class TwitterController {
   constructor(private twitterService: TwitterService) {}
   @Post('/tweet')

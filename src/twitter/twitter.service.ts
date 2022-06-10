@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entity/user.entity';
+import { UserEntity } from '../user/entity/user.entity';
 import { Repository } from 'typeorm';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { TweetEntity } from './entity/tweet.entity';
@@ -22,7 +22,15 @@ export class TwitterService {
     newTweet.body = createTweetDto.body;
     newTweet.owner = userProfile;
     const dbResp = await this.tweetRepository.save(newTweet);
-    return { id: dbResp.id };
+    const customResp = {
+      id: dbResp.id,
+      body: dbResp.body,
+      owner: dbResp.owner.id,
+      created_at: dbResp.created_at,
+      updated_at: dbResp.updated_at,
+      deleted_at: dbResp.deleted_at,
+    };
+    return customResp;
   }
 
   async getTimeline(requesterId, skip, limit) {
@@ -46,6 +54,14 @@ export class TwitterService {
       .orderBy('tweet.created_at', 'DESC')
       .skip(skip)
       .limit(limit)
+      .select([
+        'tweet.id',
+        'tweet.body',
+        'tweet.created_at',
+        'tweet.updated_at',
+        'tweet.deleted_at',
+        'owner.id',
+      ])
       .getMany();
     return tweets;
   }

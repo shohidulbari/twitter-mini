@@ -1,5 +1,5 @@
-import { BaseEntity } from 'src/base.entity';
-import { UserEntity } from 'src/user/entity/user.entity';
+import { BaseEntity } from '../../base.entity';
+import { UserEntity } from '../../user/entity/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'TWEETS' })
@@ -10,6 +10,6 @@ export class TweetEntity extends BaseEntity {
   @Column()
   body: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.tweets)
+  @ManyToOne(() => UserEntity, (user) => user.tweets, { onDelete: 'CASCADE' })
   owner: UserEntity;
 }
