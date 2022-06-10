@@ -12,7 +12,6 @@ async function bootstrap() {
     .setDescription('Twitter mini API description')
     .setVersion('1.0')
     .addTag('API')
-    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);

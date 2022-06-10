@@ -59,6 +59,12 @@ export class UserService {
   }
 
   async follow(followDto: FollowDto, requesterId: number) {
+    if (followDto.to == requesterId) {
+      throw new HttpException(
+        'You can not follow yourself',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const requesterProfile = await this.userRepository.findOne({
       where: { id: requesterId },
     });
